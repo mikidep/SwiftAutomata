@@ -38,7 +38,7 @@ public class NFA<StateType: Hashable, SymbolType: Hashable> {
 	public init(initialState iState: StateType, acceptingStates aStates: Set<StateType>) {
 		initialState = iState;
 		acceptingStates = aStates
-		initiate()
+		initialize()
 	}
 	
 	/**
@@ -73,10 +73,10 @@ public class NFA<StateType: Hashable, SymbolType: Hashable> {
 	}
 	
 	/**
-	Initiates/resets the automaton into its initial state.
+	Initializes/resets the automaton into its initial state.
 	WARNING: This method must be called after new moves are added.
 	*/
-	public func initiate() {
+	public func initialize() {
 		currentStates = epsilonClosureForState(initialState)
 	}
 	
