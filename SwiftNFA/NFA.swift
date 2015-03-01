@@ -6,9 +6,6 @@
 //  Copyright (c) 2015 Michele De Pascalis. All rights reserved.
 //
 
-/// The type of a state of the automaton
-public typealias NFAStateID = Int
-
 /// The type of the current running status for the automaton
 public enum NFAStatus: Printable {
 	case Running
@@ -24,12 +21,13 @@ public enum NFAStatus: Printable {
 	}
 }
 
-public class NFA<T: Hashable> {
-	var moves = Map<NFAStateID, T, Set<NFAStateID>>()
-	var epsilonMoves: [NFAStateID: Set<NFAStateID>] = [:]
-	public var initialState: NFAStateID
-	var acceptingStates: Set<NFAStateID>
-	var currentStates = Set<NFAStateID>()
+/// This class represents a Nondeterministic Finite Automaton, whose states are represented by objects of type StateType, and whose input is composed by symbols represented by objects of type SymbolType.
+public class NFA<StateType: Hashable, SymbolType: Hashable> {
+	var moves = Map<StateType, SymbolType, Set<StateType>>()
+	var epsilonMoves: [StateType: Set<StateType>] = [:]
+	public var initialState: StateType
+	var acceptingStates: Set<StateType>
+	var currentStates = Set<StateType>()
 	
 	/**
 	Initializes a new NFA with given initial states and accepting states.
@@ -37,7 +35,7 @@ public class NFA<T: Hashable> {
 	:param: initialState The initial state of the automaton.
 	:param: acceptingStates The set of accepting automaton
 	*/
-	public init(initialState iState: NFAStateID, acceptingStates aStates: Set<NFAStateID>) {
+	public init(initialState iState: StateType, acceptingStates aStates: Set<StateType>) {
 		initialState = iState;
 		acceptingStates = aStates
 		initiate()
@@ -50,7 +48,7 @@ public class NFA<T: Hashable> {
 	:param: symbol The input symbol that determines the move.
 	:param: tState The target state for the move.
 	*/
-	public func addMoveFromState(fState: NFAStateID, forSymbol symbol: T, toState tState: NFAStateID) {
+	public func addMoveFromState(fState: StateType, forSymbol symbol: SymbolType, toState tState: StateType) {
 		if let states = moves[fState, symbol] {
 			moves[fState, symbol]!.append(tState)
 		}
@@ -65,7 +63,7 @@ public class NFA<T: Hashable> {
 	:param: fState The state in which the move can be done.
 	:param: tState The target state for the move.
 	*/
-	public func addEpsilonMoveFromState(fState: NFAStateID, toState tState: NFAStateID) {
+	public func addEpsilonMoveFromState(fState: StateType, toState tState: StateType) {
 		if let states = epsilonMoves[fState] {
 			epsilonMoves[fState]!.append(tState)
 		}
@@ -82,8 +80,8 @@ public class NFA<T: Hashable> {
 		currentStates = epsilonClosureForState(initialState)
 	}
 	
-	public func iterateWithSymbol(symbol: T) -> NFAStatus? {
-		var targetStates = Set<NFAStateID>()
+	public func iterateWithSymbol(symbol: SymbolType) -> NFAStatus? {
+		var targetStates = Set<StateType>()
 		for state in currentStates {
 			if let tStates = moves[state, symbol] {
 				targetStates += tStates
@@ -101,7 +99,7 @@ public class NFA<T: Hashable> {
 		return nil
 	}
 	
-	func epsilonClosureForState(state: NFAStateID, visitedStates:Set<NFAStateID> = []) -> Set<NFAStateID> {
+	func epsilonClosureForState(state: StateType, visitedStates:Set<StateType> = []) -> Set<StateType> {
 		if let epsilonStates = epsilonMoves[state] {
 			var nvStates = visitedStates
 			nvStates.append(state)
@@ -112,8 +110,8 @@ public class NFA<T: Hashable> {
 		}
 	}
 	
-	func epsilonClosureForSetOfStates(states: Set<NFAStateID>, visitedStates:Set<NFAStateID> = []) -> Set<NFAStateID> {
-		var epsilonStates = Set<NFAStateID>()
+	func epsilonClosureForSetOfStates(states: Set<StateType>, visitedStates:Set<StateType> = []) -> Set<StateType> {
+		var epsilonStates = Set<StateType>()
 		for state in states {
 			epsilonStates += epsilonClosureForState(state, visitedStates: visitedStates)
 		}
