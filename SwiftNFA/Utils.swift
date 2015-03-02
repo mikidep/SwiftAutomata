@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Michele De Pascalis. All rights reserved.
 //
 
-struct Map<X:Hashable,Y:Hashable,V> {
+public struct Map<X:Hashable,Y:Hashable,V> {
 	var values = [X:[Y:V]]()
 	subscript (x:X, y:Y)->V? {
 		get { return values[x]?[y] }
