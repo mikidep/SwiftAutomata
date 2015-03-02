@@ -1,7 +1,7 @@
 # SwiftNFA
 SwiftNFA is a way to implement Nondeterministic Finite Automata in Swift.
 ###Usage
-SwiftNSA has a main generic class called `NSA` that represents the automaton. You can instantiate an automaton with `NSA<StateType, SymbolType>(initialState: iState, acceptingStates: aStates)`, where `StateType` is the type of the objects that represent states of the automaton, `SymbolType` is the type of the objects that the automaton will be receiving as input, `initialState` is a `StateType` representation for the initial state and `aStates` an array (or Set) with the accepting states of the automaton. For example:
+SwiftNFA has a main generic class called `NFA` that represents the automaton. You can instantiate an automaton with `NFA<StateType, SymbolType>(initialState: iState, acceptingStates: aStates)`, where `StateType` is the type of the objects that represent states of the automaton, `SymbolType` is the type of the objects that the automaton will be receiving as input, `initialState` is a `StateType` representation for the initial state and `aStates` an array (or Set) with the accepting states of the automaton. For example:
 
     let automaton = NFA<Int, Character>(initialState: 0, acceptingStates: [1, 4])
 Will give you an automaton that reads `Character`'s, uses `Int`'s to refer to its own states, starts in state `0` and accepts input if and only if there is a path in its graph ending in states `1` or `4` whose non-epsilon moves are sequentially given by the characters of the input. But I don't have to explain NFA's to you, do I?
