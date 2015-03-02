@@ -5,18 +5,20 @@ SwiftNFA has a main generic class called `NFA` that represents the automaton. Yo
 
     let automaton = NFA<Int, Character>(initialState: 0, acceptingStates: [1, 4])
 Will give you an automaton that reads `Character`'s, uses `Int`'s to refer to its own states, starts in state `0` and accepts input if and only if there is a path in its graph ending in states `1` or `4` whose non-epsilon moves are sequentially given by the characters of the input. But I don't have to explain NFA's to you, do I?
-The methods `addMoveFromState(forSymbol:toState)` and `addEpsilonMoveFromState(toState:)` respectively add transitions with a given symbol of type `SymbolType` or ε-transitions from a given state to a given state. For example, consider the following NFA:
+
+The method `addMoveFromState(forSymbol:toState)` adds a transition with a given symbol of type `SymbolType`, or an ε-transition if the symbol is `nil`, from a given state to a given state. You may also use the methods `addEpsilonMoveFromState(toState:)`, `addMove()` and `addMoves()` to add moves in whatever fashion you prefer. `addMove()` will take a 3-tuple composed by the applicable state, the symbol (which, again, can be `nil` to signify an ε-move) and the target state; `addMoves()` will take an array of such tuples.
+
+For example, consider the following NFA:
 
 ![NFA example](http://goo.gl/X6RWCC?gdriveurl)
 
 Starting from the automaton instantiated above, the one in the picture is constructed with the following code (the order of the instructions is not relevant):
 
-    automaton.addEpsilonMoveFromState(0, toState: 1)
-    automaton.addMoveFromState(1, forSymbol: "a", toState: 1)
-    automaton.addEpsilonMoveFromState(0, toState: 2)
-    automaton.addMoveFromState(2, forSymbol: "a", toState: 3)
-    automaton.addMoveFromState(3, forSymbol: "b", toState: 4)
-    automaton.addEpsilonMoveFromState(4, toState: 2)
+	automaton.addMoveFromState(1, forSymbol: "a", toState: 1)
+	automaton.addMoveFromState(0, forSymbol: nil, toState: 2)   // nil symbol: ε-move!
+	// Might as well have used automaton.addEpsilonMoveFromState(0, toState:2)
+	automaton.addMove((2, "a", 3))
+	automaton.addMoves([(3, "b", 4), (4, nil, 2)])
 
 After you've added new moves, you need to call the `initialize()` method before you can run the automaton, like so:
 
@@ -39,6 +41,10 @@ After you've added new moves, you need to call the `initialize()` method before 
     nil
     nil
     nil
+
+###Initializers
+NFA features two initializers, one for a machine without moves, and another, `init(movesTable: (symbolMoves:, epsilonMoves:), initialState:, acceptingStates:)` which lets you specify a moves table: this is given as a tuple composed by a 2D `Map` with the non-ε moves, such that `symbolMoves[state, symbol] = targetState`, and a `Dictionary` containing all the ε-moves such that `epsilonMoves[state] = targetState`.
+A table of the same format is also the value of the read only property `movesTable`, which exposes the machine's current transitions table.
    
 ##About Set's
 SwiftNFA currently uses [Nate Cook's Set object](https://github.com/natecook1000/SwiftSets)  to represent sets, and I am really grateful to him for the awesome implementation. However, Swift 1.2 will feature a native `Set` data structure, which I will migrate the code to as soon as it comes out of beta.
