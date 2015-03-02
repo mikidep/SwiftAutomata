@@ -18,7 +18,7 @@ Starting from the automaton instantiated above, the one in the picture is constr
     automaton.addMoveFromState(3, forSymbol: "b", toState: 4)
     automaton.addEpsilonMoveFromState(4, toState: 2)
 
-Before you run the automaton, you need to call the `initialize()` method to set it up, like so:
+After you've added new moves, you need to call the `initialize()` method before you can run the automaton, like so:
 
     automaton.initialize()
  This is also the method you need to call if you want to reset the automaton to its initial state.
