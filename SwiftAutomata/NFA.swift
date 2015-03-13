@@ -6,26 +6,15 @@
 //  Copyright (c) 2015 Michele De Pascalis. All rights reserved.
 //
 
-/// The type of the current running status for the automaton
-public enum NFAStatus: Printable {
-	case Running
-	case Accepting
-	
-	public var description: String {
-		switch self {
-		case .Running:
-			return "NFAStatus.Running"
-		case .Accepting:
-			return "NFAStatus.Accepting"
-		}
-	}
-}
-
 /// This class represents a Nondeterministic Finite Automaton, whose states are represented by objects of type StateType, and whose input is composed by symbols represented by objects of type SymbolType.
-public class NFA<StateType: Hashable, SymbolType: Hashable> {
+public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 	var moves: Map<StateType, SymbolType, Set<StateType>>
 	var epsilonMoves: [StateType: Set<StateType>]
-	public var initialState: StateType
+	public var initialState: StateType {
+		didSet {
+			initialized = false;
+		}
+	}
 	var acceptingStates: Set<StateType>
 	var currentStates = Set<StateType>()
 	var initialized = false
