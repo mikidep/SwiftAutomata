@@ -1,6 +1,1 @@
-SwiftNFA.xcodeproj
-SwiftNFATests
-
-SwiftNFA/Info.plist
-
-SwiftNFA/SwiftNFA.h
+SwiftAutomata/main.swift
