@@ -15,8 +15,8 @@ For example, consider the following NFA:
 Starting from the automaton instantiated above, the one in the picture is constructed with the following code (the order of the instructions is not relevant):
 
 	automaton.addMoveFromState(1, forSymbol: "a", toState: 1)
-	automaton.addMoveFromState(0, forSymbol: nil, toState: 2)   // nil symbol: ε-move!
-	// Might as well have used automaton.addEpsilonMoveFromState(0, toState:2)
+	automaton.addMoveFromState(0, forSymbol: nil, toState: 1)   // nil symbol: ε-move!
+	automaton.addEpsilonMoveFromState(0, toState:2)
 	automaton.addMove((2, "a", 3))
 	automaton.addMoves([(3, "b", 4), (4, nil, 2)])
 
