@@ -7,16 +7,16 @@
 //
 
 public class DFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
-	var moves: Map<StateType, SymbolType, StateType>
+	var moves: Table<StateType, SymbolType, StateType>
 	public var initialState: StateType
 	var acceptingStates: Set<StateType>
 	var currentState: StateType
 	
-	public var movesTable: Map<StateType, SymbolType, StateType> {
+	public var movesTable: Table<StateType, SymbolType, StateType> {
 		return moves
 	}
 	
-	public init(movesTable: Map<StateType, SymbolType, StateType>, initialState iState: StateType, acceptingStates aStates: Set<StateType>) {
+	public init(movesTable: Table<StateType, SymbolType, StateType>, initialState iState: StateType, acceptingStates aStates: Set<StateType>) {
 		moves = movesTable
 		initialState = iState
 		acceptingStates = aStates
@@ -24,7 +24,7 @@ public class DFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 	}
 	
 	convenience init(initialState iState: StateType, acceptingStates aStates: Set<StateType>) {
-		self.init(movesTable: Map<StateType, SymbolType, StateType>(), initialState: iState, acceptingStates: aStates)
+		self.init(movesTable: Table<StateType, SymbolType, StateType>(), initialState: iState, acceptingStates: aStates)
 	}
 
 	public func addMoveFromState(fState: StateType, forSymbol symbol:SymbolType, toState tState: StateType) {

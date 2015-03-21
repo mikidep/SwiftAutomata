@@ -8,7 +8,7 @@
 
 /// This class represents a Nondeterministic Finite Automaton, whose states are represented by objects of type StateType, and whose input is composed by symbols represented by objects of type SymbolType.
 public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
-	var moves: Map<StateType, SymbolType, Set<StateType>>
+	var moves: Table<StateType, SymbolType, Set<StateType>>
 	var epsilonMoves: [StateType: Set<StateType>]
 	public var initialState: StateType {
 		didSet {
@@ -19,7 +19,7 @@ public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 	var currentStates = Set<StateType>()
 	var initialized = false
 	
-	public var movesTable: (symbolMoves: Map<StateType, SymbolType, Set<StateType>>, epsilonMoves: [StateType: Set<StateType>]) {
+	public var movesTable: (symbolMoves: Table<StateType, SymbolType, Set<StateType>>, epsilonMoves: [StateType: Set<StateType>]) {
 		return (symbolMoves: moves, epsilonMoves: epsilonMoves)
 	}
 	
@@ -31,7 +31,7 @@ public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 	:param: initialState The initial state of the automaton.
 	:param: acceptingStates The set of accepting automaton
 	*/
-	public init(movesTable: (symbolMoves: Map<StateType, SymbolType, Set<StateType>>, epsilonMoves: [StateType: Set<StateType>]), initialState iState: StateType, acceptingStates aStates: Set<StateType>) {
+	public init(movesTable: (symbolMoves: Table<StateType, SymbolType, Set<StateType>>, epsilonMoves: [StateType: Set<StateType>]), initialState iState: StateType, acceptingStates aStates: Set<StateType>) {
 		moves = movesTable.symbolMoves
 		epsilonMoves = movesTable.epsilonMoves
 		initialState = iState;
@@ -46,7 +46,7 @@ public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 	:param: acceptingStates The set of accepting automaton
 	*/
 	public convenience init(initialState iState: StateType, acceptingStates aStates: Set<StateType>) {
-		self.init(movesTable: (Map<StateType, SymbolType, Set<StateType>>(), [:]), initialState: iState, acceptingStates: aStates)
+		self.init(movesTable: (Table<StateType, SymbolType, Set<StateType>>(), [:]), initialState: iState, acceptingStates: aStates)
 	}
 	
 	// MARK: Moves management
