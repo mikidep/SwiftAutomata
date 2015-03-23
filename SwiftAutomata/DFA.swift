@@ -27,17 +27,17 @@ public class DFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 		self.init(movesTable: Table<StateType, SymbolType, StateType>(), initialState: iState, acceptingStates: aStates)
 	}
 
-	public func addMoveFromState(fState: StateType, forSymbol symbol:SymbolType, toState tState: StateType) {
+	public func setMoveFromState(fState: StateType, forSymbol symbol:SymbolType, toState tState: StateType) {
 		moves[fState, symbol] = tState
 	}
 	
-	public func addMove(moveTuple: (fState: StateType, symbol: SymbolType, tState: StateType)) {
-		addMoveFromState(moveTuple.fState, forSymbol: moveTuple.symbol, toState: moveTuple.tState)
+	public func setMove(moveTuple: (fState: StateType, symbol: SymbolType, tState: StateType)) {
+		setMoveFromState(moveTuple.fState, forSymbol: moveTuple.symbol, toState: moveTuple.tState)
 	}
 	
-	public func addMoves(movesTuples: [(fState: StateType, symbol: SymbolType, tState: StateType)]) {
+	public func setMoves(movesTuples: [(fState: StateType, symbol: SymbolType, tState: StateType)]) {
 		for t in movesTuples {
-			addMove(t)
+			setMove(t)
 		}
 	}
 
