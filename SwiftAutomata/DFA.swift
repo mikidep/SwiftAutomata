@@ -9,7 +9,7 @@
 public class DFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 	var moves: Table<StateType, SymbolType, StateType>
 	public var initialState: StateType
-	var acceptingStates: Set<StateType>
+	public var acceptingStates: Set<StateType>
 	var currentState: StateType
 	
 	public var movesTable: Table<StateType, SymbolType, StateType> {
