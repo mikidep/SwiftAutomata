@@ -15,7 +15,7 @@ public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 			initialized = false;
 		}
 	}
-	var acceptingStates: Set<StateType>
+	public var acceptingStates: Set<StateType>
 	var currentStates = Set<StateType>()
 	var initialized = false
 	
