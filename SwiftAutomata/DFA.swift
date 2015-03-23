@@ -61,3 +61,18 @@ public class DFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 		}
 	}
 }
+
+extension DFA: Printable {
+	public var description: String {
+		var d = ""
+		for (state, symbol) in self.movesTable.keys {
+			let tState = self.movesTable[state, symbol]!
+			d += "(\(state), \(symbol)) ➔ \(tState)"
+			if self.acceptingStates.contains(tState) {
+				d += " (accepting)"
+			}
+			d += "\n"
+		}
+		return d
+	}
+}

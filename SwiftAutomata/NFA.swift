@@ -130,7 +130,7 @@ public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 			}
 		}
 		currentStates = epsilonClosureForSetOfStates(targetStates)
-		if !(currentStates.setByIntersectionWithSet(acceptingStates).isEmpty) {
+		if currentStates.intersectsWithSet(acceptingStates) {
 			return .Accepting
 		}
 		else if !(currentStates.isEmpty) {
@@ -141,6 +141,47 @@ public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 		return nil
 	}
 	
+	// MARK: DFA conversion methods
+	public func constructDFA() -> DFA<Int, SymbolType> {
+		let dfa = DFA<Int, SymbolType>(initialState: 0, acceptingStates: [])
+		var powerSet: [Set<StateType>] = []
+		let nfa = self.copy()
+		
+		powersetContstructDFA(dfa, fromNFA: nfa, fromStates: nfa.currentStates, knownSubsets: &powerSet)
+		
+		return dfa
+	}
+	
+	public func powersetContstructDFA(dfa: DFA<Int, SymbolType>, fromNFA nfa: NFA<StateType, SymbolType>, fromStates states: Set<StateType>, inout knownSubsets: [Set<StateType>]) {
+		
+		knownSubsets.append(states)
+		if states.intersectsWithSet(acceptingStates) {
+			dfa.acceptingStates.add(find(knownSubsets, states)!)
+		}
+		
+		var symbols = Set<SymbolType>()
+		for (state, symbol) in moves.keys {
+			if states.contains(state) {
+				symbols.add(symbol)
+			}
+		}
+		
+		for s in symbols {
+			let snfa = nfa.copy()
+			snfa.iterateWithSymbol(s)
+			let newStates = snfa.currentStates
+			if !contains(knownSubsets, newStates) {
+				powersetContstructDFA(dfa, fromNFA: snfa, fromStates: newStates, knownSubsets: &knownSubsets)
+			}
+			dfa.setMoveFromState(find(knownSubsets, states)!, forSymbol: s, toState: find(knownSubsets, newStates)!)
+		}
+	}
+	
+	func copy() -> NFA<StateType, SymbolType> {
+		var nfa = NFA<StateType, SymbolType>(movesTable: self.movesTable, initialState: self.initialState, acceptingStates: self.acceptingStates)
+		nfa.currentStates = self.currentStates
+		return nfa
+	}
 	
 	// MARK: ε-closures helper methods
 	func epsilonClosureForState(state: StateType, visitedStates:Set<StateType> = []) -> Set<StateType> {
