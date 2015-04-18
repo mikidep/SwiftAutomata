@@ -45,11 +45,6 @@ After you've added new moves, you need to call the `initialize()` method before 
 ###Initializers
 NFA features two initializers, one for a machine without moves, and another, `init(movesTable: (symbolMoves:, epsilonMoves:), initialState:, acceptingStates:)` which lets you specify a moves table: this is given as a tuple composed by a 2D `Map` with the non-ε moves, such that `symbolMoves[state, symbol] = targetState`, and a `Dictionary` containing all the ε-moves such that `epsilonMoves[state] = targetState`.
 A table of the same format is also the value of the read only property `movesTable`, which exposes the machine's current transitions table.
-   
-##About Set's and Map
-SwiftNFA currently uses [Nate Cook's Set object](https://github.com/natecook1000/SwiftSets)  to represent sets, and I am really grateful to him for the awesome implementation. However, Swift 1.2 will feature a native `Set` data structure, which I will migrate the code to as soon as it comes out of beta.
 
-The `Map` type is taken from [this dankogai's Stack Overflow answer](http://stackoverflow.com/a/25149719/484603), and I thank him very much.
-
-###What's with the Foundation free thing? Why not just use NSSet?
+###What's with the Foundation free thing?
 As far as I know, there is still a possibility that Apple will open source Swift as it consolidates into a more stable language; furthermore, an open source port called [Phoenix](https://ind.ie/about/phoenix/) is being developed. Anyway, in addition to me being a fan of standard libraries, I would love to see SwiftNFA used in some open source code outside the Apple ecosystem, and using Apple's `Foundation` wouldn't make it just as easy and clean.

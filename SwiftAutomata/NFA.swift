@@ -60,7 +60,7 @@ public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 	public func addMoveFromState(fState: StateType, forSymbol symbol: SymbolType?, toState tState: StateType) {
 		if let unwrappedSymbol = symbol {
 			if let states = moves[fState, unwrappedSymbol] {
-				moves[fState, unwrappedSymbol]!.append(tState)
+				moves[fState, unwrappedSymbol]!.insert(tState)
 			}
 			else {
 				moves[fState, unwrappedSymbol] = [tState]
@@ -68,7 +68,7 @@ public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 		}
 		else {
 			if let states = epsilonMoves[fState] {
-				epsilonMoves[fState]!.append(tState)
+				epsilonMoves[fState]!.insert(tState)
 			}
 			else {
 				epsilonMoves[fState] = [tState]
@@ -126,11 +126,11 @@ public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 		var targetStates = Set<StateType>()
 		for state in currentStates {
 			if let tStates = moves[state, symbol] {
-				targetStates += tStates
+				targetStates.unionInPlace(tStates)
 			}
 		}
 		currentStates = epsilonClosureForSetOfStates(targetStates)
-		if currentStates.intersectsWithSet(acceptingStates) {
+		if !(currentStates.isDisjointWith(acceptingStates)) {
 			return .Accepting
 		}
 		else if !(currentStates.isEmpty) {
@@ -155,14 +155,14 @@ public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 	public func powersetContstructDFA(dfa: DFA<Int, SymbolType>, fromNFA nfa: NFA<StateType, SymbolType>, fromStates states: Set<StateType>, inout knownSubsets: [Set<StateType>]) {
 		
 		knownSubsets.append(states)
-		if states.intersectsWithSet(acceptingStates) {
-			dfa.acceptingStates.add(find(knownSubsets, states)!)
+		if !(states.isDisjointWith(acceptingStates)) {
+			dfa.acceptingStates.insert(find(knownSubsets, states)!)
 		}
 		
 		var symbols = Set<SymbolType>()
 		for (state, symbol) in moves.keys {
 			if states.contains(state) {
-				symbols.add(symbol)
+				symbols.insert(symbol)
 			}
 		}
 		
@@ -187,8 +187,8 @@ public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 	func epsilonClosureForState(state: StateType, visitedStates:Set<StateType> = []) -> Set<StateType> {
 		if let epsilonStates = epsilonMoves[state] {
 			var nvStates = visitedStates
-			nvStates.append(state)
-			return [state] + epsilonClosureForSetOfStates(epsilonStates.setBySubtractingSet(nvStates), visitedStates: nvStates)
+			nvStates.insert(state)
+			return epsilonClosureForSetOfStates(epsilonStates.subtract(nvStates), visitedStates: nvStates).union([state])
 		}
 		else {
 			return [state]
@@ -198,7 +198,7 @@ public class NFA<StateType: Hashable, SymbolType: Hashable>: Automaton {
 	func epsilonClosureForSetOfStates(states: Set<StateType>, visitedStates:Set<StateType> = []) -> Set<StateType> {
 		var epsilonStates = Set<StateType>()
 		for state in states {
-			epsilonStates += epsilonClosureForState(state, visitedStates: visitedStates)
+			epsilonStates.unionInPlace(epsilonClosureForState(state, visitedStates: visitedStates))
 		}
 		return epsilonStates
 	}
