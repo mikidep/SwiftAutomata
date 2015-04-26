@@ -24,24 +24,26 @@ public func == <X: Hashable, Y: Hashable> (lhs: Pair<X, Y>, rhs: Pair<X, Y>) -> 
 	return lhs.x == rhs.x && lhs.y == rhs.y
 }
 
-/// A 2-dimensional table
+/// A Table implementation that does store information about its keys.
 public struct Table<X: Hashable, Y: Hashable, V> {
-	var stored: [Pair<X,Y>: V] = [:]
+	var stored: [Int: V] = [:]
+	var storedKeys: Set<Pair<X, Y>> = []
 	
-	public var keys: [(X, Y)] {
-		var res: [(X, Y)] = []
-		for (pair, _) in stored {
-			res.append((pair.x, pair.y))
+	public var keys: [(x: X, y:Y)] {
+		var tmp: [(x: X, y:Y)] = []
+		for pair in storedKeys {
+			tmp.append((x: pair.x, y: pair.y))
 		}
-		return res
+		return tmp
 	}
 	
 	public subscript (x: X, y: Y) -> V? {
 		get {
-			return stored[Pair<X, Y>(x: x, y: y)]
+			return stored[Pair(x: x, y: y).hashValue]
 		}
 		set {
-			stored[Pair<X, Y>(x: x, y: y)] = newValue
+			storedKeys.insert(Pair(x: x, y: y))
+			stored[Pair(x: x, y: y).hashValue] = newValue
 		}
 	}
 }
